@@ -1,16 +1,14 @@
-{{#name}}
-{{{ level }}} {{{ name }}} [{{{ method }}} {{{ path }}}]
-{{/name}}
-{{^name}}
-{{{ level }}} {{{ method }}} {{{ path }}}
-{{/name}}
+# {{{ method }}} {{{ path }}}
 
-{{#request.description?}}
-{{{request.description}}}
-{{/request.description?}}
+{{#parameters?}}
++ Parameters
+    {{#parameters}}
+    + {{name}}: `{{value}}` ({{type}},{{attribution}}){{#description}} - {{description}}{{/description}}
+    {{/parameters}}
+
+{{/parameters?}}
 {{#request}}
 + Request{{#contentType}} ({{{contentType}}}){{/contentType}}
-
 {{#headers?}}
     + Headers
 
