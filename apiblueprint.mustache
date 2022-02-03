@@ -3,12 +3,13 @@
 {{#parameters?}}
 + Parameters
     {{#parameters}}
-    + {{name}}: `{{value}}` ({{type}},{{attribution}}){{#description}} - {{description}}{{/description}}
+    + {{name}}: `{{value}}` ({{type}}{{#attribution}}, {{attribution}}{{/attribution}}){{#description}} - {{description}}{{/description}}
     {{/parameters}}
 
 {{/parameters?}}
 {{#request}}
 + Request{{#contentType}} ({{{contentType}}}){{/contentType}}
+
 {{#headers?}}
     + Headers
 

@@ -137,37 +137,59 @@
       return paramsMap;
     };
 
+    this.pathParamsNames = function (paw_request) {
+      var params = [],
+          urlFrags = paw_request.getUrlBase(true),
+          varsMap = this.varsMap(paw_request);
+
+      for (var i in urlFrags.components) {
+        var comp = urlFrags.components[i];
+
+        if (comp.variableUUID) {
+          params.push(varsMap[comp.variableUUID].name);
+        }
+      }
+
+      return params;
+    };
+
     this.parameters = function (paw_request) {
       var params = [],
+          paramsQs = [],
+          pathParamsNames = this.pathParamsNames(paw_request),
+          qsParamsNames = [],
           urlParams = paw_request.getUrlParameters(true);
-
-      for (var i in paw_request.variables) {
-        var v = paw_request.variables[i];
-
-        params.push({
-          name: v.name,
-          type: 'string',
-          value: v.value.getEvaluatedString(),
-          description: v.description || '',
-          attribution: v.required ? 'required' : 'optional'
-        });
-      } 
 
       for (var i in urlParams) {        
         var v = urlParams[i],
             comp = v.components[0];
 
-        if (!comp.variableUUID) {
-          params.push({
+        if (v.components.length === 1 && comp.variableUUID) {
+          qsParamsNames.push(i);
+        } else {
+          paramsQs.push({
             name: i,
             type: 'string',
             value: v.getEvaluatedString(),
           });
         }
       }
+    
+      for (var i in paw_request.variables) {
+        var v = paw_request.variables[i];
 
+        if (pathParamsNames.indexOf(v.name) >= 0 || qsParamsNames.indexOf(v.name) >= 0) {
+          params.push({
+            name: v.name,
+            type: 'string',
+            value: v.value.getEvaluatedString(),
+            description: v.description || '',
+            attribution: v.required ? 'required' : 'optional'
+          });
+        }
+      } 
 
-      return params;
+      return params.concat(paramsQs);
     };
 
     /**
