@@ -138,7 +138,8 @@
     };
 
     this.parameters = function (paw_request) {
-      var params = [];
+      var params = [],
+          urlParams = paw_request.getUrlParameters(true);
 
       for (var i in paw_request.variables) {
         var v = paw_request.variables[i];
@@ -150,7 +151,21 @@
           description: v.description || '',
           attribution: v.required ? 'required' : 'optional'
         });
+      } 
+
+      for (var i in urlParams) {        
+        var v = urlParams[i],
+            comp = v.components[0];
+
+        if (!comp.variableUUID) {
+          params.push({
+            name: i,
+            type: 'string',
+            value: v.getEvaluatedString(),
+          });
+        }
       }
+
 
       return params;
     };
